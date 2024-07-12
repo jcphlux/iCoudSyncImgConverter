@@ -25,7 +25,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --onefile --icon=imgs/iCloudSync_icon.png --add-data "imgs/iCloudSync_icon.png;imgs" src/iCoudSyncImgConverter.py
+          pyinstaller --onefile --icon=imgs/iCloudSync_icon.ico --add-data "imgs/iCloudSync_icon.png;imgs" src/iCoudSyncImgConverter.py
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
