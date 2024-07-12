@@ -40,26 +40,8 @@ pip install watchdog sqlalchemy pillow pillow-heif pystray cairosvg
     git clone https://github.com/your-username/iCloudSync.git
     ```
 
-2. Install the required dependencies:
 
-    ```bash
-    npm install
-    ```
 
-3. Configure the settings:
-
-    Open the `config.json` file and update the following properties:
-
-    - `sourceFolder`: The folder to monitor for changes.
-    - `destinationFolder`: The folder where converted files will be saved.
-    - `convertToJpg`: Set to `true` if you want to convert HEIC files to JPG.
-    - `createSymbolicLinks`: Set to `true` if you want to create symbolic links instead of copying files.
-
-4. Start iCloudSync:
-
-    ```bash
-    npm start
-    ```
 
 ## Contributing
 
