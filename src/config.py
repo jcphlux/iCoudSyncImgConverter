@@ -1,3 +1,5 @@
+import os
+import sys
 from database import get_session
 from models import FolderConfig, UniversalConfig
 
@@ -31,8 +33,17 @@ class ConfigLoader:
     def update_universal_config(self, icon_path, default_behavior):
         config = self.get_universal_config()
         if config:
-            config.icon_path = icon_path
+            config.icon_path = self.resource_path(icon_path)
             config.default_behavior = default_behavior
             self.session.commit()
         else:
             raise ValueError("Universal config not found.")
+
+    def resource_path(relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
