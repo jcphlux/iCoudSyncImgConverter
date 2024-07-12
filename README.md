@@ -30,18 +30,23 @@ Ensure you have Python installed. You can download it from [python.org](https://
 
 ### Install Required Python Packages
 
-```sh
-pip install watchdog sqlalchemy pillow pillow-heif pystray cairosvg
-
-
 1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/your-username/iCloudSync.git
+    ```sh
+    git clone https://github.com/jcphlux/iCoudSyncImgConverter.git
     ```
 
+2. create environment:
 
+    ```sh
+    python -m venv .venv
+    ```
 
+3. Install packages:
+
+    ```sh
+    pip install -r requirements.txt
+    ```
 
 ## Contributing
 
