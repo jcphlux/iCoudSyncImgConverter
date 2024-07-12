@@ -1,9 +1,9 @@
 
 # iCloudSyncImgConverter
 
-<img src="imgs/PhluxApps.svg" alt="iCloudSyncImgConverter Logo" height="50">
+<img src="imgs/PhluxApps.svg" alt="iCloudSyncImgConverter Logo" height="120">
 
-<img src="imgs/sun_icon_corrected.svg" alt="iCloudSyncImgConverter Logo" height="50">
+<img src="imgs/icsic_logo.svg" alt="iCloudSyncImgConverter Logo" height="275">
 
 [iCloudSyncImgConverter](https://github.com/jcphlux/iCoudSyncImgConverter) is a Python-based application designed to synchronize and process images from iCloud Photos. The application monitors specified folders, converts HEIC/HEVC images to JPG format, and handles file synchronization between source and destination directories.
 
