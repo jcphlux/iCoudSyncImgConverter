@@ -1,3 +1,11 @@
 {
-    "jira-plugin.workingProject": ""
+  "jira-plugin.workingProject": "",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "db",
+      "database": "${workspaceFolder:iCoudSyncImgConverter}/icloud_sync.db"
+    }
+  ]
 }

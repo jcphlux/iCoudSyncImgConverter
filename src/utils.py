@@ -1,28 +1,19 @@
 import threading
 import pystray
 from PIL import Image
-import cairosvg
-import io
+import subprocess
 
 
 class TrayIcon:
-
-    def __init__(self, observer, executor, icon_path, icon_size, default_behavior):
-        self.observer = observer
+    def __init__(self, observers, executor, icon_path, default_behavior):
+        self.observers = observers
         self.executor = executor
         self.icon_path = icon_path
-        self.icon_size = icon_size
         self.default_behavior = default_behavior
         self.icon = None
 
     def create_image(self):
-        # Convert and resize SVG to PNG
-        png_data = cairosvg.svg2png(
-            url=self.icon_path,
-            output_width=self.icon_size,
-            output_height=self.icon_size,
-        )
-        image = Image.open(io.BytesIO(png_data))
+        image = Image.open(self.icon_path)
         return image
 
     def start(self):
@@ -30,6 +21,7 @@ class TrayIcon:
         menu = pystray.Menu(
             pystray.MenuItem("Start Sync", self.start_sync),
             pystray.MenuItem("Stop Sync", self.stop_sync),
+            pystray.MenuItem("Open Config UI", self.open_config_ui),
             pystray.MenuItem(
                 "Set Behavior",
                 pystray.Menu(
@@ -51,12 +43,17 @@ class TrayIcon:
         threading.Thread(target=self.icon.run, daemon=True).start()
 
     def start_sync(self, icon, item):
-        self.observer.start()
+        for observer in self.observers:
+            observer.start()
         self.icon.notify("iCloudSync", "Synchronization started.")
 
     def stop_sync(self, icon, item):
-        self.observer.stop()
+        for observer in self.observers:
+            observer.stop()
         self.icon.notify("iCloudSync", "Synchronization stopped.")
+
+    def open_config_ui(self, icon, item):
+        subprocess.Popen(["python", "config_ui.py"])
 
     def set_symbolic(self, icon, item):
         self.default_behavior = "symbolic"

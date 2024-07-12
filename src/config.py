@@ -1,27 +1,38 @@
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Config
+from database import get_session
+from models import FolderConfig, UniversalConfig
 
 
 class ConfigLoader:
-    def __init__(self, db_path="sqlite:///icloud_sync.db"):
-        engine = create_engine(db_path)
-        Session = sessionmaker(bind=engine)
-        self.session = Session()
+    def __init__(self):
+        self.session = get_session()
 
-    def get_config(self, key):
-        config = self.session.query(Config).filter_by(key=key).first()
-        if config:
-            return os.path.expandvars(config.value)
-        else:
-            raise ValueError(f"Config key '{key}' not found.")
+    def get_all_folder_configs(self):
+        return self.session.query(FolderConfig).all()
 
-    def set_config(self, key, value):
-        config = self.session.query(Config).filter_by(key=key).first()
-        if config:
-            config.value = value
-        else:
-            config = Config(key=key, value=value)
-            self.session.add(config)
+    def get_universal_config(self):
+        return self.session.query(UniversalConfig).first()
+
+    def add_folder_config(self, source_folder, destination_folder):
+        if (
+            self.session.query(FolderConfig)
+            .filter(
+                (FolderConfig.source_folder == source_folder)
+                | (FolderConfig.destination_folder == destination_folder)
+            )
+            .first()
+        ):
+            raise ValueError("Source or destination folder is already in use.")
+        folder_config = FolderConfig(
+            source_folder=source_folder, destination_folder=destination_folder
+        )
+        self.session.add(folder_config)
         self.session.commit()
+
+    def update_universal_config(self, icon_path, default_behavior):
+        config = self.get_universal_config()
+        if config:
+            config.icon_path = icon_path
+            config.default_behavior = default_behavior
+            self.session.commit()
+        else:
+            raise ValueError("Universal config not found.")

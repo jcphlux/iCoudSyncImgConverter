@@ -62,26 +62,30 @@ def create_symbolic_link(src_path, dst_path):
 
 
 class HEICtoJPGHandler(FileSystemEventHandler):
-    def __init__(self, session: Session):
-        self.destination_folder = config_loader.get_config("destination_folder")
+    def __init__(
+        self,
+        source_folder: str,
+        destination_folder: str,
+        session: Session,
+        default_behavior: str,
+    ):
+        self.source_folder = source_folder
+        self.destination_folder = destination_folder
         self.session = session
-        self.default_behavior = config_loader.get_config("default_behavior")
+        self.default_behavior = default_behavior
+        self.process_all_files()
 
-    def on_modified(self, event):
-        self.process(event)
+    def process_all_files(self):
+        for root, _, files in os.walk(self.source_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                self.process_file(file_path)
 
-    def on_created(self, event):
-        self.process(event)
-
-    def process(self, event):
-        if event.is_directory:
-            return
-
-        file_extension = os.path.splitext(event.src_path)[1].lower()
-        if file_extension in [".heic", ".hevc"]:
-            self.process_heic_file(event.src_path)
+    def process_file(self, file_path):
+        if file_path.lower().endswith((".heic", ".hevc")):
+            self.process_heic_file(file_path)
         else:
-            self.process_other_file(event.src_path)
+            self.process_other_file(file_path)
 
     def process_heic_file(self, hevc_path):
         filename = os.path.basename(hevc_path)
@@ -127,3 +131,41 @@ class HEICtoJPGHandler(FileSystemEventHandler):
         else:
             copy_file(file_path, destination_path)
             log_processed_file(self.session, filename, filehash, False)
+
+    def on_modified(self, event):
+        self.process(event)
+
+    def on_created(self, event):
+        self.process(event)
+
+    def process(self, event):
+        if event.is_directory:
+            return
+        self.process_file(event.src_path)
+
+
+class FileDeletionHandler(FileSystemEventHandler):
+    def __init__(self, source_folder: str, destination_folder: str, session: Session):
+        self.source_folder = source_folder
+        self.destination_folder = destination_folder
+        self.session = session
+
+    def on_deleted(self, event):
+        if event.is_directory:
+            return
+        self.process(event)
+
+    def process(self, event):
+        filename = os.path.basename(event.src_path)
+        source_path = os.path.join(self.source_folder, filename)
+        destination_path = os.path.join(self.destination_folder, filename)
+
+        if not os.path.exists(source_path) and os.path.exists(destination_path):
+            os.remove(destination_path)
+            print(f"Removed destination file: {destination_path}")
+            remove_processed_file(self.session, filename)
+
+        if not os.path.exists(destination_path) and os.path.exists(source_path):
+            os.remove(source_path)
+            print(f"Removed source file: {source_path}")
+            remove_processed_file(self.session, filename)

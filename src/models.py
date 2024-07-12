@@ -11,8 +11,15 @@ class ProcessedFile(Base):
     is_symbolic = Column(Boolean)
 
 
-class Config(Base):
-    __tablename__ = "config"
+class FolderConfig(Base):
+    __tablename__ = "folder_config"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    key = Column(String, unique=True)
-    value = Column(String)
+    source_folder = Column(String, unique=True)
+    destination_folder = Column(String, unique=True)
+
+
+class UniversalConfig(Base):
+    __tablename__ = "universal_config"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    icon_path = Column(String)
+    default_behavior = Column(String)

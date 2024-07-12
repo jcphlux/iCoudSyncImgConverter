@@ -1,8 +1,0 @@
-{
-    "folder_to_watch": "%USERPROFILE%\\Pictures\\iCloud Photos\\Photos",
-    "destination_folder": "%USERPROFILE%\\Pictures\\iCloudSync",
-    "db_file": "icloud_sync.db",
-    "icon_path": "imgs\\iCloudSync_icon.svg",
-    "icon_size": 24,
-    "default_behavior": "symbolic"
-}
